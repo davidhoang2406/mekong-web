@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useTickerStore } from '@/stores/tickerStore'
 
 const NAV = [
   {
@@ -20,6 +21,14 @@ const NAV = [
 ]
 
 export function Sidebar() {
+  const connectionState = useTickerStore((s) => s.connectionState)
+  const dotColor =
+    connectionState === 'connected' ? 'bg-up live-dot' :
+    connectionState === 'reconnecting' ? 'bg-yellow-400 live-dot' : 'bg-fg-muted'
+  const label =
+    connectionState === 'connected' ? 'connected' :
+    connectionState === 'reconnecting' ? 'reconnecting…' : 'disconnected'
+
   return (
     <aside className="fixed top-[60px] bottom-0 left-0 w-[240px] bg-bg border-r border-border flex flex-col z-20">
       <nav className="flex-1 py-3 px-2 space-y-0.5 text-[14px]">
@@ -42,8 +51,8 @@ export function Sidebar() {
         ))}
       </nav>
       <div className="border-t border-border px-4 py-3 flex items-center gap-2 text-[12px]">
-        <span className="h-2 w-2 rounded-full bg-up live-dot" />
-        <span className="text-fg-muted">connected</span>
+        <span className={`h-2 w-2 rounded-full ${dotColor}`} />
+        <span className="text-fg-muted">{label}</span>
       </div>
     </aside>
   )
