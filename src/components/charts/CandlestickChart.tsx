@@ -36,24 +36,26 @@ export function CandlestickChart({ bars, overlays = [], height = 420 }: Props) {
       height,
       layout: {
         background: { type: ColorType.Solid, color: 'transparent' },
-        textColor: '#a1a1aa',
+        textColor: '#737373',
       },
       grid: {
-        vertLines: { color: '#27272a' },
-        horzLines: { color: '#27272a' },
+        vertLines: { color: '#e5e5e5' },
+        horzLines: { color: '#e5e5e5' },
       },
-      rightPriceScale: { borderColor: '#3f3f46' },
-      timeScale: { borderColor: '#3f3f46', timeVisible: false },
+      rightPriceScale: { borderColor: '#e5e5e5' },
+      timeScale: { borderColor: '#e5e5e5', timeVisible: true },
       autoSize: true,
     })
     chartRef.current = chart
 
     const candles = chart.addSeries(CandlestickSeries, {
-      upColor: '#10b981',
-      downColor: '#ef4444',
-      borderVisible: false,
-      wickUpColor: '#10b981',
-      wickDownColor: '#ef4444',
+      upColor: '#16a34a',
+      downColor: '#dc2626',
+      borderVisible: true,
+      borderUpColor: '#16a34a',
+      borderDownColor: '#dc2626',
+      wickUpColor: '#16a34a',
+      wickDownColor: '#dc2626',
     })
     candles.setData(
       bars.map((b) => ({ time: day(b.time), open: b.open, high: b.high, low: b.low, close: b.close })),
@@ -68,7 +70,7 @@ export function CandlestickChart({ bars, overlays = [], height = 420 }: Props) {
       bars.map((b) => ({
         time: day(b.time),
         value: b.volume,
-        color: b.close >= b.open ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.4)',
+        color: b.close >= b.open ? 'rgba(22,163,74,0.4)' : 'rgba(220,38,38,0.4)',
       })),
     )
 
