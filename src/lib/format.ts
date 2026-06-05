@@ -31,6 +31,10 @@ export function formatDate(value: string | null | undefined): string {
   return value.slice(0, 10)
 }
 
+/** Short aliases used by redesigned route pages. */
+export const fmtNum = (v: number | null | undefined) => v == null ? '—' : vnd.format(v)
+export const fmtPct = (v: number | null | undefined) => v == null ? '—' : decimal.format(Math.abs(v))
+
 /** ISO YYYY-MM-DD for `days` ago from today. */
 export function isoDaysAgo(days: number): string {
   const d = new Date()
