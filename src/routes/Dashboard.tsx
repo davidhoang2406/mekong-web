@@ -73,7 +73,7 @@ function TableCard({ title, entries, volFirst }: { title: string; entries: Diges
 
 export function Dashboard() {
   const date = isoDaysAgo(1)
-  const digest = useDigest(date)
+  const digest = useDigest(date, undefined, 50)
   const symbols = useSymbols()
 
   const byCategory = (cat: string) =>
