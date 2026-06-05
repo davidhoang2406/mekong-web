@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useOHLCV } from '@/hooks/useOHLCV'
 import { useIndicators } from '@/hooks/useIndicators'
 import { fmtNum, fmtPct } from '@/lib/format'
 import { CandlestickChart } from '@/components/charts/CandlestickChart'
+import { useTickerStore } from '@/stores/tickerStore'
 import type { IndicatorRow } from '@/api/types'
 
 const RANGES = [
@@ -69,13 +70,19 @@ export function SymbolDetail() {
   const ohlcv = useOHLCV(symbol, from, to)
   const indicators = useIndicators(symbol, from, to)
 
+  // Subscribe to live ticks for this symbol
+  const { subscribe, unsubscribe, prices } = useTickerStore()
+  useEffect(() => {
+    if (symbol) { subscribe([symbol]); return () => unsubscribe([symbol]) }
+  }, [symbol, subscribe, unsubscribe])
+  const liveTick = prices[symbol]
+
   const bars = ohlcv.data?.bars ?? []
   const inds = indicators.data?.indicators ?? []
   const latest = bars[bars.length - 1]
   const latestInd = inds[inds.length - 1]
   const prev = bars[bars.length - 2]
   const pctChange = latest && prev ? ((latest.close - prev.close) / prev.close) * 100 : 0
-  const up = pctChange >= 0
 
   return (
     <div>
@@ -94,23 +101,35 @@ export function SymbolDetail() {
             <span className="text-[11px] font-semibold tracking-wider px-2 py-0.5 rounded border border-border text-fg-muted uppercase">
               {ohlcv.data?.asset_class ?? 'Stock'}
             </span>
+            {liveTick && (
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-0.5 rounded border border-up text-up uppercase tracking-wider">
+                <span className="h-1.5 w-1.5 rounded-full bg-up live-dot" /> LIVE
+              </span>
+            )}
           </div>
         </div>
       </div>
 
-      {latest && (
-        <div className="mt-3 flex items-baseline gap-4 font-mono">
-          <span className={`text-[36px] font-semibold num leading-none ${up ? 'text-up' : 'text-down'}`}>
-            {fmtNum(latest.close)}
-          </span>
-          <span className={up ? 'text-up text-[16px]' : 'text-down text-[16px]'}>
-            {up ? '▲' : '▼'} {fmtPct(Math.abs(pctChange))}%
-          </span>
-          <span className="ml-auto text-[12px] text-fg-muted font-sans">
-            day high <b className="num">{fmtNum(latest.high)}</b> · day low <b className="num">{fmtNum(latest.low)}</b>
-          </span>
-        </div>
-      )}
+      {(liveTick || latest) && (() => {
+        const price = liveTick?.price ?? latest?.close ?? 0
+        const chg = liveTick?.pct_change ?? pctChange
+        const isUp = chg >= 0
+        return (
+          <div className="mt-3 flex items-baseline gap-4 font-mono">
+            <span className={`text-[36px] font-semibold num leading-none ${isUp ? 'text-up' : 'text-down'}`}>
+              {fmtNum(price)}
+            </span>
+            <span className={isUp ? 'text-up text-[16px]' : 'text-down text-[16px]'}>
+              {isUp ? '▲' : '▼'} {fmtPct(Math.abs(chg))}%
+            </span>
+            {latest && (
+              <span className="ml-auto text-[12px] text-fg-muted font-sans">
+                day high <b className="num">{fmtNum(latest.high)}</b> · day low <b className="num">{fmtNum(latest.low)}</b>
+              </span>
+            )}
+          </div>
+        )
+      })()}
 
       <div className="mt-6 grid grid-cols-[1fr_360px] gap-5">
         <div className="space-y-3">
@@ -144,7 +163,7 @@ export function SymbolDetail() {
             </div>
             {ohlcv.isLoading
               ? <div className="h-[380px] flex items-center justify-center text-fg-muted text-[13px]">Loading…</div>
-              : <CandlestickChart bars={bars} height={380} />
+              : <CandlestickChart bars={bars} height={380} liveTick={liveTick} />
             }
           </div>
 

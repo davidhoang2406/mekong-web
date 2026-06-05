@@ -6,8 +6,9 @@ import {
   LineSeries,
   ColorType,
 } from 'lightweight-charts'
-import type { IChartApi, Time } from 'lightweight-charts'
+import type { IChartApi, ISeriesApi, Time } from 'lightweight-charts'
 import type { OHLCVBar } from '@/api/types'
+import type { Tick } from '@/stores/tickerStore'
 
 export interface LineOverlay {
   name: string
@@ -19,14 +20,17 @@ interface Props {
   bars: OHLCVBar[]
   overlays?: LineOverlay[]
   height?: number
+  liveTick?: Tick
 }
 
 const day = (t: string): Time => t.slice(0, 10) as Time
 
 /** TradingView Lightweight Charts wrapper: candles + volume + optional SMA overlays. */
-export function CandlestickChart({ bars, overlays = [], height = 420 }: Props) {
+export function CandlestickChart({ bars, overlays = [], height = 420, liveTick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
+  const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
 
   useEffect(() => {
     const container = containerRef.current
@@ -60,6 +64,7 @@ export function CandlestickChart({ bars, overlays = [], height = 420 }: Props) {
     candles.setData(
       bars.map((b) => ({ time: day(b.time), open: b.open, high: b.high, low: b.low, close: b.close })),
     )
+    candleSeriesRef.current = candles
 
     const volume = chart.addSeries(HistogramSeries, {
       priceFormat: { type: 'volume' },
@@ -73,6 +78,7 @@ export function CandlestickChart({ bars, overlays = [], height = 420 }: Props) {
         color: b.close >= b.open ? 'rgba(22,163,74,0.4)' : 'rgba(220,38,38,0.4)',
       })),
     )
+    volumeSeriesRef.current = volume
 
     for (const ov of overlays) {
       const line = chart.addSeries(LineSeries, { color: ov.color, lineWidth: 1, title: ov.name })
@@ -86,6 +92,24 @@ export function CandlestickChart({ bars, overlays = [], height = 420 }: Props) {
       chartRef.current = null
     }
   }, [bars, overlays, height])
+
+  // Update last candle on live tick
+  useEffect(() => {
+    if (!liveTick || !candleSeriesRef.current || !volumeSeriesRef.current) return
+    const t = liveTick.timestamp.slice(0, 10) as Time
+    candleSeriesRef.current.update({
+      time: t,
+      open: liveTick.price,   // use live price as close; open kept from last bar if available
+      high: liveTick.price,
+      low: liveTick.price,
+      close: liveTick.price,
+    })
+    volumeSeriesRef.current.update({
+      time: t,
+      value: liveTick.volume,
+      color: liveTick.change >= 0 ? 'rgba(22,163,74,0.4)' : 'rgba(220,38,38,0.4)',
+    })
+  }, [liveTick])
 
   return <div ref={containerRef} className="w-full" />
 }
