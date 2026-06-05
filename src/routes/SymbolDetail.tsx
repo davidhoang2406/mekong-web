@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { useOHLCV } from '@/hooks/useOHLCV'
 import { useIndicators } from '@/hooks/useIndicators'
 import { fmtNum, fmtPct } from '@/lib/format'
-import type { OHLCVBar, IndicatorRow } from '@/api/types'
+import { CandlestickChart } from '@/components/charts/CandlestickChart'
+import type { IndicatorRow } from '@/api/types'
 
 const RANGES = [
   { label: '1W', days: 7 },
@@ -19,43 +20,6 @@ function isoDate(daysAgo: number) {
   return d.toLocaleDateString('en-CA')
 }
 
-function CandleChart({ bars }: { bars: OHLCVBar[] }) {
-  if (!bars.length) return <div className="h-[280px] flex items-center justify-center text-fg-muted text-[13px]">No data</div>
-  const min = Math.min(...bars.map(b => b.low))
-  const max = Math.max(...bars.map(b => b.high))
-  const range = max - min || 1
-  const W = 900, H = 280, padY = 20
-  const bw = Math.max(2, (W / bars.length) * 0.6)
-  const step = W / bars.length
-
-  function scaleY(v: number) { return H - padY - ((v - min) / range) * (H - padY * 2) }
-
-  return (
-    <svg className="candle w-full" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
-      <g stroke="#e5e5e5" strokeWidth="0.5">
-        {[0.2, 0.4, 0.6, 0.8].map(r => (
-          <line key={r} x1="0" y1={scaleY(min + range * (1 - r))} x2={W} y2={scaleY(min + range * (1 - r))} />
-        ))}
-      </g>
-      {bars.map((b, i) => {
-        const x = i * step + step / 2
-        const up = b.close >= b.open
-        const color = up ? '#16a34a' : '#dc2626'
-        const bodyY = scaleY(Math.max(b.open, b.close))
-        const bodyH = Math.max(1, Math.abs(scaleY(b.open) - scaleY(b.close)))
-        return (
-          <g key={i}>
-            <line x1={x} y1={scaleY(b.high)} x2={x} y2={scaleY(b.low)} stroke={color} strokeWidth="1" />
-            <rect
-              x={x - bw / 2} y={bodyY} width={bw} height={bodyH}
-              fill={up ? '#ffffff' : color} stroke={color} strokeWidth={up ? '1.2' : '0'}
-            />
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
 
 function RSIChart({ data }: { data: IndicatorRow[] }) {
   const vals = data.map(r => r.rsi14).filter(Boolean) as number[]
@@ -179,8 +143,8 @@ export function SymbolDetail() {
               </>}
             </div>
             {ohlcv.isLoading
-              ? <div className="h-[280px] flex items-center justify-center text-fg-muted text-[13px]">Loading…</div>
-              : <CandleChart bars={bars} />
+              ? <div className="h-[380px] flex items-center justify-center text-fg-muted text-[13px]">Loading…</div>
+              : <CandlestickChart bars={bars} height={380} />
             }
           </div>
 
