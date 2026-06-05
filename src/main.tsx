@@ -2,12 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { App } from '@/App'
+import { AppLayout, AuthLayout } from '@/App'
 import { Dashboard } from '@/routes/Dashboard'
 import { SymbolDetail } from '@/routes/SymbolDetail'
 import { Screener } from '@/routes/Screener'
 import { Digest } from '@/routes/Digest'
-import { Settings } from '@/routes/Settings'
+import { Login } from '@/routes/Login'
+import { Register } from '@/routes/Register'
 import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import '@/styles/globals.css'
 
@@ -17,14 +18,20 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter([
   {
+    element: <AuthLayout />,
+    children: [
+      { path: '/login', element: <Login /> },
+      { path: '/register', element: <Register /> },
+    ],
+  },
+  {
     path: '/',
-    element: <App />,
+    element: <AppLayout />,
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'symbol/:symbol', element: <SymbolDetail /> },
       { path: 'screener', element: <Screener /> },
       { path: 'digest', element: <Digest /> },
-      { path: 'settings', element: <Settings /> },
     ],
   },
 ])
