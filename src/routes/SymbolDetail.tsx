@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useOHLCV } from '@/hooks/useOHLCV'
 import { useIndicators } from '@/hooks/useIndicators'
 import { fmtNum, fmtPct } from '@/lib/format'
+import type { OHLCVBar, IndicatorRow } from '@/api/types'
 
 const RANGES = [
   { label: '1W', days: 7 },
@@ -18,7 +19,7 @@ function isoDate(daysAgo: number) {
   return d.toLocaleDateString('en-CA')
 }
 
-function CandleChart({ bars }: { bars: any[] }) {
+function CandleChart({ bars }: { bars: OHLCVBar[] }) {
   if (!bars.length) return <div className="h-[280px] flex items-center justify-center text-fg-muted text-[13px]">No data</div>
   const min = Math.min(...bars.map(b => b.low))
   const max = Math.max(...bars.map(b => b.high))
@@ -56,7 +57,7 @@ function CandleChart({ bars }: { bars: any[] }) {
   )
 }
 
-function RSIChart({ data }: { data: any[] }) {
+function RSIChart({ data }: { data: IndicatorRow[] }) {
   const vals = data.map(r => r.rsi14).filter(Boolean) as number[]
   if (!vals.length) return null
   const W = 900, H = 100
@@ -75,7 +76,7 @@ function RSIChart({ data }: { data: any[] }) {
   )
 }
 
-function MACDChartComp({ data }: { data: any[] }) {
+function MACDChartComp({ data }: { data: IndicatorRow[] }) {
   const macds = data.map(r => r.macd).filter(Boolean) as number[]
   const signals = data.map(r => r.macd_signal).filter(Boolean) as number[]
   if (!macds.length) return null
