@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AppLayout, AuthLayout } from '@/App'
 import { Dashboard } from '@/routes/Dashboard'
+import { Symbols } from '@/routes/Symbols'
 import { SymbolDetail } from '@/routes/SymbolDetail'
 import { Screener } from '@/routes/Screener'
 import { Digest } from '@/routes/Digest'
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { index: true, element: <Dashboard /> },
+      { path: 'symbols', element: <Symbols /> },
       { path: 'symbol/:symbol', element: <SymbolDetail /> },
       { path: 'screener', element: <Screener /> },
       { path: 'digest', element: <Digest /> },
