@@ -25,6 +25,14 @@ interface TickerState {
   _setConnectionState: (s: ConnectionState) => void
 }
 
+// Stocks update every 30s — mark stale after 2 minutes (4 missed cycles).
+// Crypto runs 24/7 at 5s so it stays fresh naturally.
+const TICK_MAX_AGE_MS = 120_000
+
+export function isFreshTick(tick: Tick): boolean {
+  return Date.now() - new Date(tick.timestamp).getTime() < TICK_MAX_AGE_MS
+}
+
 const WS_URL = '/ws'
 const RECONNECT_BASE_MS = 1000
 const RECONNECT_MAX_MS = 30000

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useTickerStore } from '@/stores/tickerStore'
+import { useTickerStore, isFreshTick } from '@/stores/tickerStore'
 
 export function LiveTickerBar() {
   const { prices, subscribe, unsubscribe, connectionState } = useTickerStore()
@@ -9,10 +9,10 @@ export function LiveTickerBar() {
     return () => unsubscribe(['*'])
   }, [subscribe, unsubscribe])
 
-  const ticks = Object.values(prices)
+  const freshTicks = Object.values(prices).filter(isFreshTick)
 
-  // Duplicate for seamless infinite scroll
-  const items = ticks.length > 0 ? [...ticks, ...ticks] : STATIC_ITEMS
+  // Duplicate for seamless infinite scroll; fall back to static when all ticks are stale
+  const items = freshTicks.length > 0 ? [...freshTicks, ...freshTicks] : STATIC_ITEMS
 
   return (
     <div className="ticker-mask my-5 h-12 overflow-hidden rounded-md border border-border bg-bg flex items-center">
