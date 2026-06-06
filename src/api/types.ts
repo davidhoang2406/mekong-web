@@ -65,6 +65,13 @@ export interface DigestEntry {
 export interface DigestResponse {
   date: string
   digest: DigestEntry[]
+  fallback?: boolean
+}
+
+export interface LiveDigestResponse {
+  live: true
+  as_of: string
+  digest: DigestEntry[]
 }
 
 export interface ScreenerResult {
