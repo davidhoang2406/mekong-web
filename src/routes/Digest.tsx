@@ -42,13 +42,13 @@ export function Digest() {
   const { data: liveData, isLoading: liveLoading } = useDigestLive(undefined, 10)
 
   const isLive = mode === 'live'
-  const allDigest: DigestEntry[] = isLive ? (liveData?.digest ?? []) : (historyData?.digest ?? [])
+  const isFallback = !isLive && historyData?.fallback === true
+  // When fallback, treat as no data — don't show data from a different date
+  const allDigest: DigestEntry[] = (isLive ? (liveData?.digest ?? []) : (isFallback ? [] : (historyData?.digest ?? [])))
   const entries = allDigest.filter(e => e.category === tab)
   const countFor = (cat: Tab) => allDigest.filter(e => e.category === cat).length
 
   const isLoading = isLive ? liveLoading : historyLoading
-  const isFallback = !isLive && historyData?.fallback === true
-  const displayDate = !isLive ? (historyData?.date ?? historyDate) : null
   const asOf = isLive && liveData?.as_of ? new Date(liveData.as_of).toLocaleTimeString() : null
 
   return (
@@ -99,9 +99,9 @@ export function Digest() {
             className="h-9 px-3 rounded-md border border-border text-[13px] font-mono bg-bg text-fg cursor-pointer hover:bg-bg-muted focus:outline-none"
           />
         )}
-        {isFallback && displayDate && (
+        {isFallback && (
           <span className="text-[12px] text-fg-muted italic">
-            no data for selected date — showing {displayDate}
+            No data available for {historyDate}
           </span>
         )}
       </div>
@@ -145,7 +145,7 @@ export function Digest() {
             <tbody className="font-mono">
               {entries.length === 0
                 ? <tr><td colSpan={7} className="p-6 text-[13px] text-fg-muted text-center">
-                    {isLive ? 'No live data yet — waiting for ticks' : `No data for ${displayDate}`}
+                    {isLive ? 'No live data yet — waiting for ticks' : `No data for ${historyDate}`}
                   </td></tr>
                 : entries.map(e => <DigestRow key={`${e.category}-${e.rank}`} e={e} />)
               }
