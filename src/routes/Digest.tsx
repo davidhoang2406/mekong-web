@@ -35,15 +35,16 @@ function DigestRow({ e }: { e: DigestEntry }) {
 export function Digest() {
   const [tab, setTab] = useState<Tab>('gainer')
   const [mode, setMode] = useState<Mode>('live')
+  const [historyDate, setHistoryDate] = useState(isoDaysAgo(1))
 
-  const historyDate = isoDaysAgo(1)
-  const { data: historyData, isLoading: historyLoading } = useDigest(historyDate, tab, 10)
-  const { data: liveData, isLoading: liveLoading } = useDigestLive(tab, 10)
+  // Fetch all categories at once so every tab has its own accurate count
+  const { data: historyData, isLoading: historyLoading } = useDigest(historyDate, undefined, 30)
+  const { data: liveData, isLoading: liveLoading } = useDigestLive(undefined, 10)
 
   const isLive = mode === 'live'
-  const entries: DigestEntry[] = isLive
-    ? (liveData?.digest ?? []).filter(e => e.category === tab)
-    : (historyData?.digest ?? [])
+  const allDigest: DigestEntry[] = isLive ? (liveData?.digest ?? []) : (historyData?.digest ?? [])
+  const entries = allDigest.filter(e => e.category === tab)
+  const countFor = (cat: Tab) => allDigest.filter(e => e.category === cat).length
 
   const isLoading = isLive ? liveLoading : historyLoading
   const isFallback = !isLive && historyData?.fallback === true
@@ -89,18 +90,18 @@ export function Digest() {
             as of {asOf}
           </span>
         )}
-        {!isLive && displayDate && (
-          <span className="h-9 px-3 rounded-md border border-border text-[13px] flex items-center gap-1.5 font-mono text-fg-muted">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            {displayDate}
-          </span>
+        {!isLive && (
+          <input
+            type="date"
+            value={historyDate}
+            max={isoDaysAgo(0)}
+            onChange={e => e.target.value && setHistoryDate(e.target.value)}
+            className="h-9 px-3 rounded-md border border-border text-[13px] font-mono bg-bg text-fg cursor-pointer hover:bg-bg-muted focus:outline-none"
+          />
         )}
-        {isFallback && (
+        {isFallback && displayDate && (
           <span className="text-[12px] text-fg-muted italic">
-            (latest available — today's batch not yet ready)
+            no data for selected date — showing {displayDate}
           </span>
         )}
       </div>
@@ -121,7 +122,7 @@ export function Digest() {
               {t.id === 'gainer' && <span className={tab === t.id ? '' : 'text-up'}>▲</span>}
               {t.id === 'loser'  && <span className={tab === t.id ? '' : 'text-down'}>▼</span>}
               {t.label}
-              <span className="text-[11px] opacity-70">({entries.length})</span>
+              <span className="text-[11px] opacity-70">({countFor(t.id)})</span>
             </button>
           ))}
         </div>
