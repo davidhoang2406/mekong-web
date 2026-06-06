@@ -44,6 +44,14 @@ body {
 
 :focus-visible { outline: 2px solid #1e1e1e; outline-offset: 2px; border-radius: 4px; }
 
+/* Search input — suppress all browser focus rings (outline + box-shadow) */
+.search-input:focus,
+.search-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
 @keyframes live-pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }

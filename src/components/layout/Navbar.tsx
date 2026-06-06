@@ -95,7 +95,7 @@ export function Navbar() {
 
       {/* Search */}
       <div ref={wrapperRef} className="ml-12 relative w-[480px]">
-        <div className="flex items-center h-9 bg-bg-muted rounded-md border border-border px-3 text-fg-muted">
+        <div className="flex items-center h-9 bg-bg-muted rounded-md border border-border focus-within:border-border px-3 text-fg-muted">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 shrink-0">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
           </svg>
@@ -104,7 +104,7 @@ export function Navbar() {
             onChange={handleInput}
             onFocus={() => query.trim() && setOpen(true)}
             onKeyDown={handleKeyDown}
-            className="bg-transparent flex-1 outline-none focus:outline-none focus-visible:outline-none text-[14px] placeholder-fg-muted text-fg"
+            className="search-input bg-transparent flex-1 outline-none focus:outline-none focus-visible:outline-none text-[14px] placeholder-fg-muted text-fg"
             placeholder="Search symbols — VCB, BTC-USDT, FPT..."
           />
           {query && (
