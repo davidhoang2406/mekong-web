@@ -99,11 +99,6 @@ export function Digest() {
             className="h-9 px-3 rounded-md border border-border text-[13px] font-mono bg-bg text-fg cursor-pointer hover:bg-bg-muted focus:outline-none"
           />
         )}
-        {isFallback && (
-          <span className="text-[12px] text-fg-muted italic">
-            No data available for {historyDate}
-          </span>
-        )}
       </div>
 
       <div className="card bg-bg border border-border rounded-lg overflow-hidden">
