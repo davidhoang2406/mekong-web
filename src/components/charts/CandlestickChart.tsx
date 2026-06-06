@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import {
   createChart,
   CandlestickSeries,
@@ -26,7 +26,7 @@ interface Props {
 const day = (t: string): Time => t.slice(0, 10) as Time
 
 /** TradingView Lightweight Charts wrapper: candles + volume + optional SMA overlays. */
-export function CandlestickChart({ bars, overlays = [], height = 420, liveTick }: Props) {
+export const CandlestickChart = memo(function CandlestickChart({ bars, overlays = [], height = 420, liveTick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
@@ -112,4 +112,4 @@ export function CandlestickChart({ bars, overlays = [], height = 420, liveTick }
   }, [liveTick])
 
   return <div ref={containerRef} className="w-full" />
-}
+})
