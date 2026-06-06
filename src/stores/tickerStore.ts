@@ -31,7 +31,6 @@ const RECONNECT_MAX_MS = 30000
 
 let ws: WebSocket | null = null
 const subscriptions: Set<string> = new Set()
-let reconnectTimeout: ReturnType<typeof setTimeout> | null = null
 let reconnectDelay = RECONNECT_BASE_MS
 
 function connect(store: TickerState) {
@@ -59,7 +58,7 @@ function connect(store: TickerState) {
     ws = null
     if (subscriptions.size > 0) {
       store._setConnectionState('reconnecting')
-      reconnectTimeout = setTimeout(() => {
+      setTimeout(() => {
         reconnectDelay = Math.min(reconnectDelay * 2, RECONNECT_MAX_MS)
         connect(store)
       }, reconnectDelay)
@@ -94,11 +93,7 @@ export const useTickerStore = create<TickerState>((set, get) => ({
     if (ws?.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ action: 'unsubscribe', symbols }))
     }
-    if (subscriptions.size === 0) {
-      if (reconnectTimeout) clearTimeout(reconnectTimeout)
-      ws?.close()
-      ws = null
-      get()._setConnectionState('disconnected')
-    }
+    // Keep the connection open — closing on empty subscriptions causes a
+    // reconnect on every route navigation since components unmount briefly.
   },
 }))
