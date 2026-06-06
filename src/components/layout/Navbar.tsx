@@ -104,7 +104,7 @@ export function Navbar() {
             onChange={handleInput}
             onFocus={() => query.trim() && setOpen(true)}
             onKeyDown={handleKeyDown}
-            className="bg-transparent flex-1 outline-none text-[14px] placeholder-fg-muted text-fg"
+            className="bg-transparent flex-1 outline-none focus:outline-none focus-visible:outline-none text-[14px] placeholder-fg-muted text-fg"
             placeholder="Search symbols — VCB, BTC-USDT, FPT..."
           />
           {query && (
