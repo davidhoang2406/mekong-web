@@ -4,7 +4,7 @@ import { useOHLCV } from '@/hooks/useOHLCV'
 import { useIndicators } from '@/hooks/useIndicators'
 import { fmtNum, fmtPct } from '@/lib/format'
 import { CandlestickChart } from '@/components/charts/CandlestickChart'
-import { useTickerStore } from '@/stores/tickerStore'
+import { useTickerStore, isFreshTick } from '@/stores/tickerStore'
 import type { IndicatorRow } from '@/api/types'
 
 const RANGES = [
@@ -75,7 +75,8 @@ export function SymbolDetail() {
   useEffect(() => {
     if (symbol) { subscribe([symbol]); return () => unsubscribe([symbol]) }
   }, [symbol, subscribe, unsubscribe])
-  const liveTick = prices[symbol]
+  const rawTick = prices[symbol]
+  const liveTick = rawTick && isFreshTick(rawTick) ? rawTick : undefined
 
   const bars = ohlcv.data?.bars ?? []
   const inds = indicators.data?.indicators ?? []
