@@ -1,6 +1,33 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { apiPost } from '@/api/client'
+import { useAuthStore } from '@/stores/authStore'
 
 export function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const { setAuth } = useAuthStore()
+  const navigate = useNavigate()
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const res = await apiPost<{ token: string; user: { id: string; email: string; name: string } }>(
+        '/auth/login', { email, password }
+      )
+      setAuth(res.token, res.user)
+      navigate('/')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-bg-muted grid place-items-center px-4">
       <div className="w-full max-w-md">
@@ -13,30 +40,30 @@ export function Login() {
           <h1 className="text-[20px] font-semibold tracking-tight">Sign in to your account</h1>
           <p className="text-[13px] text-fg-muted mt-1">Enter your credentials below</p>
 
-          <form className="mt-6 space-y-4" onSubmit={e => e.preventDefault()}>
+          {error && (
+            <div className="mt-4 px-3 py-2 rounded-md bg-red-50 border border-red-200 text-red-600 text-[13px]">{error}</div>
+          )}
+
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
             <label className="block">
               <span className="block text-[12px] font-medium mb-1.5">Email</span>
-              <input type="email" placeholder="you@example.com" autoComplete="email"
-                className="w-full h-11 px-3 rounded-md border border-border text-[14px] bg-bg outline-none focus:border-fg focus:ring-1 focus:ring-fg" />
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com" autoComplete="email" required
+                className="w-full h-11 px-3 rounded-md border border-border text-[14px] bg-bg outline-none focus:border-fg transition-colors" />
             </label>
 
             <label className="block">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-[12px] font-medium">Password</span>
-                <a href="#" className="text-[12px] text-fg-muted hover:text-fg">Forgot?</a>
               </div>
-              <input type="password" placeholder="••••••••••" autoComplete="current-password"
-                className="w-full h-11 px-3 rounded-md border border-border text-[14px] bg-bg outline-none focus:border-fg focus:ring-1 focus:ring-fg" />
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••••" autoComplete="current-password" required
+                className="w-full h-11 px-3 rounded-md border border-border text-[14px] bg-bg outline-none focus:border-fg transition-colors" />
             </label>
 
-            <label className="flex items-center gap-2 text-[12px] text-fg-muted">
-              <input type="checkbox" className="h-4 w-4 rounded border-border" />
-              Keep me signed in on this device
-            </label>
-
-            <button type="submit"
-              className="w-full h-11 rounded-md bg-fg text-bg text-[14px] font-semibold hover:opacity-90 transition-opacity">
-              Sign in
+            <button type="submit" disabled={loading}
+              className="w-full h-11 rounded-md bg-fg text-bg text-[14px] font-semibold hover:opacity-90 transition-opacity disabled:opacity-50">
+              {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
         </div>
