@@ -13,14 +13,33 @@
   --color-down: #dc2626;
 }
 
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --color-bg: #0f0f0f;
+  --color-bg-muted: #1a1a1a;
+  --color-fg: #e5e5e5;
+  --color-fg-muted: #737373;
+  --color-border: #2a2a2a;
+}
+
+[data-theme="dark"] body { background-color: #0f0f0f; color: #e5e5e5; }
+[data-theme="dark"] .tbl tbody tr:nth-child(even) { background-color: #141414; }
+[data-theme="dark"] .tbl tbody tr:hover { background-color: #1a1a1a; }
+[data-theme="dark"] .nav-active { background-color: #1a1a1a; }
+[data-theme="dark"] .nav-active::before { background: #e5e5e5; }
+[data-theme="dark"] .card { box-shadow: 0 1px 0 rgba(255,255,255,0.04); }
+[data-theme="dark"] .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+[data-theme="dark"] :focus-visible { outline-color: #e5e5e5; }
+
 html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 html, body, #root { height: 100%; }
 
 body {
   margin: 0;
-  background-color: #ffffff;
-  color: #1e1e1e;
+  background-color: var(--color-bg, #ffffff);
+  color: var(--color-fg, #1e1e1e);
   font-family: 'Inter', system-ui, sans-serif;
+  transition: background-color 120ms ease, color 120ms ease;
 }
 
 :focus-visible { outline: 2px solid #1e1e1e; outline-offset: 2px; border-radius: 4px; }

@@ -4,6 +4,7 @@ import { useOHLCV } from '@/hooks/useOHLCV'
 import { useIndicators } from '@/hooks/useIndicators'
 import { fmtNum, fmtPct } from '@/lib/format'
 import { CandlestickChart } from '@/components/charts/CandlestickChart'
+import { SkeletonChart } from '@/components/common/SkeletonChart'
 import { useTickerStore, isFreshTick } from '@/stores/tickerStore'
 import type { IndicatorRow } from '@/api/types'
 
@@ -163,7 +164,7 @@ export function SymbolDetail() {
               </>}
             </div>
             {ohlcv.isLoading
-              ? <div className="h-[380px] flex items-center justify-center text-fg-muted text-[13px]">Loading…</div>
+              ? <SkeletonChart height={380} />
               : <CandlestickChart bars={bars} height={380} liveTick={liveTick} />
             }
           </div>
