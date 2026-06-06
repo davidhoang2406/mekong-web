@@ -94,11 +94,7 @@ export const useTickerStore = create<TickerState>((set, get) => ({
     if (ws?.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ action: 'unsubscribe', symbols }))
     }
-    if (subscriptions.size === 0) {
-      if (reconnectTimeout) clearTimeout(reconnectTimeout)
-      ws?.close()
-      ws = null
-      get()._setConnectionState('disconnected')
-    }
+    // Keep the connection open — closing on empty subscriptions causes a
+    // reconnect on every route navigation since components unmount briefly.
   },
 }))
