@@ -10,6 +10,7 @@ import { Screener } from '@/routes/Screener'
 import { Digest } from '@/routes/Digest'
 import { Login } from '@/routes/Login'
 import { Register } from '@/routes/Register'
+import { AuthCallback } from '@/routes/AuthCallback'
 import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import '@/styles/globals.css'
 
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/login', element: <Login /> },
       { path: '/register', element: <Register /> },
+      { path: '/auth/callback', element: <AuthCallback /> },
     ],
   },
   {
