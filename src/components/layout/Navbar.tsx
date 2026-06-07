@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useTheme } from '@/hooks/useTheme'
 import { useTickerStore } from '@/stores/tickerStore'
+import { useAuthStore } from '@/stores/authStore'
 import { useSymbols } from '@/hooks/useSymbols'
 
 const WS_DOT: Record<string, string> = {
@@ -29,6 +30,7 @@ export function Navbar() {
   const navigate = useNavigate()
   const { theme, toggle: toggleTheme } = useTheme()
   const connectionState = useTickerStore(s => s.connectionState)
+  const { user, clearAuth } = useAuthStore()
   const { data: symbolsData } = useSymbols()
   const wrapperRef = useRef<HTMLDivElement>(null)
 
@@ -167,11 +169,27 @@ export function Navbar() {
           )}
         </button>
 
-        <button className="h-9 px-2 flex items-center gap-2 rounded-md hover:bg-bg-muted">
-          <span className="h-7 w-7 rounded-full bg-fg text-bg grid place-items-center text-[11px] font-semibold">D</span>
-          <span className="text-[13px] text-fg">david</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
-        </button>
+        {user ? (
+          <div className="flex items-center gap-1">
+            <span className="h-9 px-2 flex items-center gap-2 rounded-md text-[13px] text-fg">
+              <span className="h-7 w-7 rounded-full bg-fg text-bg grid place-items-center text-[11px] font-semibold">
+                {user.name.charAt(0).toUpperCase()}
+              </span>
+              {user.name.split(' ')[0]}
+            </span>
+            <button
+              onClick={() => { clearAuth(); navigate('/login') }}
+              className="h-9 px-2 rounded-md text-[12px] text-fg-muted hover:bg-bg-muted hover:text-fg"
+            >
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <Link to="/login"
+            className="h-9 px-3 rounded-md bg-fg text-bg text-[13px] font-semibold hover:opacity-90 flex items-center">
+            Sign in
+          </Link>
+        )}
       </div>
     </header>
   )
