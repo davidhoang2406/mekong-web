@@ -1,0 +1,84 @@
+import { useState } from 'react'
+
+// Icons sourced from github.com/ErikThiart/cryptocurrency-icons, stored in /public/crypto-icons/
+const CRYPTO_TICKERS = new Set([
+  'BTC','ETH','BNB','SOL','XRP','DOGE','ADA','AVAX','SHIB','DOT',
+  'MATIC','LINK','LTC','TRX','UNI','ATOM','TON','BCH','NEAR','APT',
+])
+
+// Stock icons stored in /public/stock-icons/
+const STOCK_TICKERS = new Set(['ACB','VNM','HPG','TCB','VCB','VIC'])
+
+const STOCK_COLORS = [
+  '#0ea5e9', '#8b5cf6', '#f59e0b', '#10b981',
+  '#ef4444', '#06b6d4', '#f97316', '#6366f1',
+]
+
+function stockColor(symbol: string): string {
+  let h = 0
+  for (let i = 0; i < symbol.length; i++) h = (h * 31 + symbol.charCodeAt(i)) & 0xffff
+  return STOCK_COLORS[h % STOCK_COLORS.length]
+}
+
+function baseTicker(symbol: string): string {
+  return symbol.split('/')[0].toUpperCase()
+}
+
+function isCrypto(symbol: string, assetClass?: string): boolean {
+  return assetClass === 'crypto' || symbol.includes('/')
+}
+
+export function SymbolIcon({
+  symbol,
+  assetClass,
+  size = 20,
+}: {
+  symbol: string
+  assetClass?: string
+  size?: number
+}) {
+  const [errored, setErrored] = useState(false)
+
+  if (isCrypto(symbol, assetClass) && !errored) {
+    const ticker = baseTicker(symbol)
+    if (CRYPTO_TICKERS.has(ticker)) {
+      return (
+        <img
+          src={`/crypto-icons/${ticker}.png`}
+          alt={ticker}
+          width={size}
+          height={size}
+          onError={() => setErrored(true)}
+          className="rounded-full shrink-0"
+          style={{ width: size, height: size }}
+        />
+      )
+    }
+  }
+
+  const ticker = baseTicker(symbol)
+  if (STOCK_TICKERS.has(ticker) && !errored) {
+    return (
+      <img
+        src={`/stock-icons/${ticker}.png`}
+        alt={ticker}
+        width={size}
+        height={size}
+        onError={() => setErrored(true)}
+        className="rounded-full shrink-0"
+        style={{ width: size, height: size }}
+      />
+    )
+  }
+
+  const label = ticker.slice(0, 2)
+  const bg = stockColor(symbol)
+  return (
+    <span
+      className="inline-flex items-center justify-center rounded-full shrink-0 text-white font-bold"
+      style={{ width: size, height: size, background: bg, fontSize: size * 0.38 }}
+    >
+      {label}
+    </span>
+  )
+}

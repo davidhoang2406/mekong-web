@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import type { SymbolInfo } from '@/api/types'
 import { Table, THead, TH, TD, TR } from '@/components/ui/table'
 import { formatDate } from '@/lib/format'
+import { SymbolIcon } from '@/components/common/SymbolIcon'
 
 export function SymbolList({ symbols }: { symbols: SymbolInfo[] }) {
   return (
@@ -18,9 +19,12 @@ export function SymbolList({ symbols }: { symbols: SymbolInfo[] }) {
         {symbols.map((s) => (
           <TR key={s.symbol}>
             <TD>
-              <Link to={`/symbol/${s.symbol}`} className="font-medium text-emerald-400 hover:underline">
-                {s.symbol}
-              </Link>
+              <div className="flex items-center gap-2">
+                <SymbolIcon symbol={s.symbol} assetClass={s.asset_class} size={18} />
+                <Link to={`/symbol/${s.symbol}`} className="font-medium text-emerald-400 hover:underline">
+                  {s.symbol}
+                </Link>
+              </div>
             </TD>
             <TD className="text-zinc-400">{s.asset_class}</TD>
             <TD className="text-zinc-400">{s.exchange}</TD>

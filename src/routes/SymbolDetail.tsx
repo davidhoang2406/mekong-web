@@ -8,6 +8,7 @@ import { SkeletonChart } from '@/components/common/SkeletonChart'
 import { useTickerStore, isFreshTick } from '@/stores/tickerStore'
 import { useWatchlists, useUpdateWatchlist } from '@/hooks/useWatchlists'
 import { useAuthStore } from '@/stores/authStore'
+import { SymbolIcon } from '@/components/common/SymbolIcon'
 import type { IndicatorRow } from '@/api/types'
 
 const RANGES = [
@@ -116,6 +117,7 @@ export function SymbolDetail() {
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
+          <SymbolIcon symbol={symbol} assetClass={ohlcv.data?.asset_class} size={40} />
           <h1 className="text-[40px] font-bold tracking-tight leading-none">{symbol}</h1>
           <span className="text-[11px] font-semibold tracking-wider px-2 py-0.5 rounded border border-border text-fg-muted uppercase">
             {ohlcv.data?.asset_class ?? 'Stock'}

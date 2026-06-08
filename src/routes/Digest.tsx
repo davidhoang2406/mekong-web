@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDigest, useDigestLive } from '@/hooks/useDigest'
 import { isoDaysAgo, fmtNum, fmtPct } from '@/lib/format'
+import { SymbolIcon } from '@/components/common/SymbolIcon'
 import type { DigestEntry } from '@/api/types'
 
 type Tab = 'gainer' | 'loser' | 'volume'
@@ -18,7 +19,12 @@ function DigestRow({ e }: { e: DigestEntry }) {
   return (
     <tr>
       <td className="pl-5 py-3 text-fg-muted">{e.rank}</td>
-      <td><Link to={`/symbol/${e.symbol}`} className="font-sans font-semibold hover:underline">{e.symbol}</Link></td>
+      <td>
+        <div className="flex items-center gap-2">
+          <SymbolIcon symbol={e.symbol} assetClass={e.asset_class} size={18} />
+          <Link to={`/symbol/${e.symbol}`} className="font-sans font-semibold hover:underline">{e.symbol}</Link>
+        </div>
+      </td>
       <td className="font-sans text-fg-muted">{e.exchange}</td>
       <td className="text-right num">{fmtNum(e.open)}</td>
       <td className="text-right num">{fmtNum(e.close)}</td>

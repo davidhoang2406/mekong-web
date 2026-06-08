@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useWatchlists, useCreateWatchlist, useUpdateWatchlist, useDeleteWatchlist } from '@/hooks/useWatchlists'
 import { useSymbols } from '@/hooks/useSymbols'
 import { useAuthStore } from '@/stores/authStore'
+import { SymbolIcon } from '@/components/common/SymbolIcon'
 import type { Watchlist } from '@/api/types'
 
 function SymbolPicker({
@@ -123,7 +124,10 @@ function WatchlistCard({
               {watchlist.symbols.map(s => (
                 <tr key={s}>
                   <td className="pl-5 py-2">
-                    <Link to={`/symbol/${s}`} className="font-semibold font-sans hover:underline">{s}</Link>
+                    <div className="flex items-center gap-2">
+                      <SymbolIcon symbol={s} size={18} />
+                      <Link to={`/symbol/${s}`} className="font-semibold font-sans hover:underline">{s}</Link>
+                    </div>
                   </td>
                   <td className="text-right pr-5">
                     <button
