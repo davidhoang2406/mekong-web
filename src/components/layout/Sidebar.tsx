@@ -1,8 +1,11 @@
+import type { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useTickerStore } from '@/stores/tickerStore'
 import { useAuthStore } from '@/stores/authStore'
 
-const NAV_PUBLIC = [
+type NavItem = { to: string; label: string; exact?: boolean; icon: ReactNode }
+
+const NAV_PUBLIC: NavItem[] = [
   {
     to: '/', label: 'Dashboard', exact: true,
     icon: <><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></>,
@@ -21,7 +24,7 @@ const NAV_PUBLIC = [
   },
 ]
 
-const NAV_AUTH = [
+const NAV_AUTH: NavItem[] = [
   {
     to: '/watchlists', label: 'Watchlists',
     icon: <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>,
