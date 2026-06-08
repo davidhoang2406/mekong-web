@@ -18,6 +18,10 @@ const NAV = [
     to: '/digest', label: 'Digest',
     icon: <path d="M3 7h18M3 12h18M3 17h12"/>,
   },
+  {
+    to: '/watchlists', label: 'Watchlists',
+    icon: <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>,
+  },
 ]
 
 const WS_DOT: Record<string, string> = {

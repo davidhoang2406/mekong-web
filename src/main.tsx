@@ -8,6 +8,7 @@ import { Symbols } from '@/routes/Symbols'
 import { SymbolDetail } from '@/routes/SymbolDetail'
 import { Screener } from '@/routes/Screener'
 import { Digest } from '@/routes/Digest'
+import { Watchlists } from '@/routes/Watchlists'
 import { Login } from '@/routes/Login'
 import { Register } from '@/routes/Register'
 import { AuthCallback } from '@/routes/AuthCallback'
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
       { path: 'symbol/:symbol', element: <SymbolDetail /> },
       { path: 'screener', element: <Screener /> },
       { path: 'digest', element: <Digest /> },
+      { path: 'watchlists', element: <Watchlists /> },
     ],
   },
 ])
