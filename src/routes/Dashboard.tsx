@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { LiveTickerBar } from '@/components/layout/LiveTickerBar'
-import { useDigest } from '@/hooks/useDigest'
+import { useDigestLive } from '@/hooks/useDigest'
 import { useSymbols } from '@/hooks/useSymbols'
-import { isoDaysAgo, fmtNum, fmtPct } from '@/lib/format'
+import { fmtNum, fmtPct } from '@/lib/format'
 import type { DigestEntry } from '@/api/types'
 
 function DigestTable({ entries, volFirst }: { entries: DigestEntry[]; volFirst?: boolean }) {
@@ -61,7 +61,10 @@ function TableCard({ title, entries, volFirst }: { title: string; entries: Diges
     <section className="card bg-bg border border-border rounded-lg">
       <header className="h-12 px-5 flex items-center justify-between border-b border-border">
         <h2 className="text-[15px] font-semibold">{title}</h2>
-        <span className="text-[12px] text-fg-muted">Today</span>
+        <span className="flex items-center gap-1.5 text-[11px] text-fg-muted">
+          <span className="h-1.5 w-1.5 rounded-full bg-up live-dot" />
+          Live
+        </span>
       </header>
       {entries.length === 0
         ? <p className="p-5 text-[13px] text-fg-muted">No data available</p>
@@ -72,12 +75,11 @@ function TableCard({ title, entries, volFirst }: { title: string; entries: Diges
 }
 
 export function Dashboard() {
-  const date = isoDaysAgo(1)
-  const digest = useDigest(date, undefined, 50)
+  const digest = useDigestLive(undefined, 10)
   const symbols = useSymbols()
 
   const byCategory = (cat: string) =>
-    (digest.data?.digest ?? []).filter((e) => e.category === cat).slice(0, 10)
+    (digest.data?.digest ?? []).filter((e) => e.category === cat)
 
   const today = new Date().toLocaleDateString('en-CA')
 
