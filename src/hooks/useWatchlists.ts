@@ -7,7 +7,8 @@ const KEY = ['watchlists']
 export function useWatchlists() {
   return useQuery({
     queryKey: KEY,
-    queryFn: () => apiGet<Watchlist[]>('/watchlists'),
+    queryFn: () => apiGet<{ watchlists: Watchlist[] | null }>('/watchlists'),
+    select: (data) => data.watchlists ?? [],
     staleTime: 30_000,
   })
 }
