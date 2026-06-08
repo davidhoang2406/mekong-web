@@ -1,30 +1,10 @@
 import { useState } from 'react'
 
-// https://github.com/ErikThiart/cryptocurrency-icons — slugs verified against 32/ folder
-const CRYPTO_SLUG: Record<string, string> = {
-  BTC:  'bitcoin',
-  ETH:  'ethereum',
-  BNB:  'bnb',
-  SOL:  'solana',
-  XRP:  'xrp',
-  DOGE: 'dogecoin',
-  ADA:  'cardano',
-  AVAX: 'avalanche',
-  SHIB: 'shiba-inu',
-  DOT:  'polkadot-new',
-  MATIC:'polygon',
-  LINK: 'chainlink',
-  LTC:  'litecoin',
-  TRX:  'tron',
-  UNI:  'uniswap',
-  ATOM: 'cosmos',
-  TON:  'toncoin',
-  BCH:  'bitcoin-cash',
-  NEAR: 'near-protocol',
-  APT:  'aptos',
-}
-
-const CDN = 'https://cdn.jsdelivr.net/gh/ErikThiart/cryptocurrency-icons@master/32'
+// Icons sourced from github.com/ErikThiart/cryptocurrency-icons, stored in /public/crypto-icons/
+const CRYPTO_TICKERS = new Set([
+  'BTC','ETH','BNB','SOL','XRP','DOGE','ADA','AVAX','SHIB','DOT',
+  'MATIC','LINK','LTC','TRX','UNI','ATOM','TON','BCH','NEAR','APT',
+])
 
 const STOCK_COLORS = [
   '#0ea5e9', '#8b5cf6', '#f59e0b', '#10b981',
@@ -58,11 +38,10 @@ export function SymbolIcon({
 
   if (isCrypto(symbol, assetClass) && !errored) {
     const ticker = baseTicker(symbol)
-    const slug = CRYPTO_SLUG[ticker]
-    if (slug) {
+    if (CRYPTO_TICKERS.has(ticker)) {
       return (
         <img
-          src={`${CDN}/${slug}.png`}
+          src={`/crypto-icons/${ticker}.png`}
           alt={ticker}
           width={size}
           height={size}
