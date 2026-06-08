@@ -81,6 +81,11 @@ export function Screener() {
   const displayWeek = selectedWeek ?? data?.week ?? '—'
   const results = data?.results ?? []
 
+  function handleWeekChange(y: string, w: string) {
+    setSelectedYear(y)
+    setSelectedWeek(w)
+  }
+
   return (
     <div>
       <div className="flex items-end justify-between mt-5 mb-5">
