@@ -6,6 +6,9 @@ const CRYPTO_TICKERS = new Set([
   'MATIC','LINK','LTC','TRX','UNI','ATOM','TON','BCH','NEAR','APT',
 ])
 
+// Stock icons stored in /public/stock-icons/
+const STOCK_TICKERS = new Set(['ACB','VNM','HPG','TCB','VCB','VIC'])
+
 const STOCK_COLORS = [
   '#0ea5e9', '#8b5cf6', '#f59e0b', '#10b981',
   '#ef4444', '#06b6d4', '#f97316', '#6366f1',
@@ -53,7 +56,22 @@ export function SymbolIcon({
     }
   }
 
-  const label = baseTicker(symbol).slice(0, 2)
+  const ticker = baseTicker(symbol)
+  if (STOCK_TICKERS.has(ticker) && !errored) {
+    return (
+      <img
+        src={`/stock-icons/${ticker}.png`}
+        alt={ticker}
+        width={size}
+        height={size}
+        onError={() => setErrored(true)}
+        className="rounded-full shrink-0"
+        style={{ width: size, height: size }}
+      />
+    )
+  }
+
+  const label = ticker.slice(0, 2)
   const bg = stockColor(symbol)
   return (
     <span
