@@ -1,3 +1,12 @@
+export interface Watchlist {
+  id: string
+  user_id: string
+  name: string
+  symbols: string[]
+  created_at: string
+  updated_at: string
+}
+
 // TypeScript interfaces matching the mekong-api JSON responses.
 // Nullable numeric fields (indicators, screener ratios) are `number | null`
 // because the API serialises Go *float64 as JSON null when absent.
