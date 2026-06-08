@@ -1,15 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiGet, apiPost, apiPut, apiDelete } from '@/api/client'
+import { useAuthStore } from '@/stores/authStore'
 import type { Watchlist } from '@/api/types'
 
 const KEY = ['watchlists']
 
 export function useWatchlists() {
+  const user = useAuthStore((s) => s.user)
   return useQuery({
     queryKey: KEY,
     queryFn: () => apiGet<{ watchlists: Watchlist[] | null }>('/watchlists'),
     select: (data) => data.watchlists ?? [],
     staleTime: 30_000,
+    enabled: !!user,
   })
 }
 
