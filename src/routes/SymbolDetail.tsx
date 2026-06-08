@@ -114,55 +114,53 @@ export function SymbolDetail() {
         <span>{ohlcv.data?.asset_class ?? '—'}</span>
       </nav>
 
-      <div className="flex items-center gap-6">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-[40px] font-bold tracking-tight leading-none">{symbol}</h1>
-            <span className="text-[11px] font-semibold tracking-wider px-2 py-0.5 rounded border border-border text-fg-muted uppercase">
-              {ohlcv.data?.asset_class ?? 'Stock'}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-[40px] font-bold tracking-tight leading-none">{symbol}</h1>
+          <span className="text-[11px] font-semibold tracking-wider px-2 py-0.5 rounded border border-border text-fg-muted uppercase">
+            {ohlcv.data?.asset_class ?? 'Stock'}
+          </span>
+          {liveTick && (
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-0.5 rounded border border-up text-up uppercase tracking-wider">
+              <span className="h-1.5 w-1.5 rounded-full bg-up live-dot" /> LIVE
             </span>
-            {liveTick && (
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-0.5 rounded border border-up text-up uppercase tracking-wider">
-                <span className="h-1.5 w-1.5 rounded-full bg-up live-dot" /> LIVE
-              </span>
+          )}
+        </div>
+        {user && (
+          <div className="relative">
+            <button
+              onClick={() => setWlOpen(o => !o)}
+              title={inAny ? 'In watchlist' : 'Add to watchlist'}
+              className={`h-8 px-3 rounded-md border text-[12px] font-medium flex items-center gap-1.5 ${inAny ? 'border-up text-up' : 'border-border text-fg-muted hover:text-fg'}`}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill={inAny ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              {inAny ? 'Watching' : 'Watch'}
+            </button>
+            {wlOpen && (watchlists ?? []).length > 0 && (
+              <div className="absolute right-0 top-full mt-1 z-30 bg-bg border border-border rounded-lg shadow-lg w-52 py-1">
+                {(watchlists ?? []).map(w => (
+                  <button
+                    key={w.id}
+                    onClick={() => { toggleInWatchlist(w.id, w.symbols); setWlOpen(false) }}
+                    className="w-full flex items-center justify-between px-4 py-2 text-[13px] hover:bg-bg-muted"
+                  >
+                    <span className="truncate">{w.name}</span>
+                    {w.symbols.includes(symbol)
+                      ? <span className="text-up text-[11px] shrink-0">✓ Added</span>
+                      : <span className="text-fg-muted text-[11px] shrink-0">Add</span>
+                    }
+                  </button>
+                ))}
+              </div>
             )}
-            {user && (
-              <div className="relative">
-                <button
-                  onClick={() => setWlOpen(o => !o)}
-                  title={inAny ? 'In watchlist' : 'Add to watchlist'}
-                  className={`h-8 px-3 rounded-md border text-[12px] font-medium flex items-center gap-1.5 ${inAny ? 'border-up text-up' : 'border-border text-fg-muted hover:text-fg'}`}
-                >
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill={inAny ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  {inAny ? 'Watching' : 'Watch'}
-                </button>
-                {wlOpen && (watchlists ?? []).length > 0 && (
-                  <div className="absolute left-0 top-full mt-1 z-30 bg-bg border border-border rounded-lg shadow-lg w-52 py-1">
-                    {(watchlists ?? []).map(w => (
-                      <button
-                        key={w.id}
-                        onClick={() => { toggleInWatchlist(w.id, w.symbols); setWlOpen(false) }}
-                        className="w-full flex items-center justify-between px-4 py-2 text-[13px] hover:bg-bg-muted"
-                      >
-                        <span className="truncate">{w.name}</span>
-                        {w.symbols.includes(symbol)
-                          ? <span className="text-up text-[11px] shrink-0">✓ Added</span>
-                          : <span className="text-fg-muted text-[11px] shrink-0">Add</span>
-                        }
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {wlOpen && (watchlists ?? []).length === 0 && (
-                  <div className="absolute left-0 top-full mt-1 z-30 bg-bg border border-border rounded-lg shadow-lg w-52 p-4 text-[12px] text-fg-muted">
-                    No watchlists yet.{' '}
-                    <Link to="/watchlists" className="text-fg hover:underline">Create one</Link>
-                  </div>
-                )}
+            {wlOpen && (watchlists ?? []).length === 0 && (
+              <div className="absolute right-0 top-full mt-1 z-30 bg-bg border border-border rounded-lg shadow-lg w-52 p-4 text-[12px] text-fg-muted">
+                No watchlists yet.{' '}
+                <Link to="/watchlists" className="text-fg hover:underline">Create one</Link>
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
 
       {(liveTick || latest) && (() => {
