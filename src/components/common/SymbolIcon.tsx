@@ -21,11 +21,11 @@ function stockColor(symbol: string): string {
 }
 
 function baseTicker(symbol: string): string {
-  return symbol.split('/')[0].toUpperCase()
+  return symbol.split(/[/-]/)[0].toUpperCase()
 }
 
 function isCrypto(symbol: string, assetClass?: string): boolean {
-  return assetClass === 'crypto' || symbol.includes('/')
+  return assetClass === 'crypto' || symbol.includes('/') || symbol.includes('-')
 }
 
 export function SymbolIcon({
