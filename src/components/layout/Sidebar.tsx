@@ -33,7 +33,7 @@ const WS_LABEL: Record<string, string> = {
   disconnected: 'Offline',
 }
 
-export function Sidebar() {
+export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const connectionState = useTickerStore((s) => s.connectionState)
 
   return (
@@ -60,9 +60,26 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="border-t border-border px-4 py-3 flex items-center gap-2 text-[11px] font-mono">
-        <span className={`h-1.5 w-1.5 rounded-full ${WS_DOT[connectionState] ?? 'bg-fg-muted'}`} />
-        <span className="text-fg-muted">{WS_LABEL[connectionState] ?? 'Offline'}</span>
+
+      <div className="border-t border-border px-2 py-2 space-y-1">
+        <button
+          onClick={onToggle}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className="w-full flex items-center gap-3 px-3 h-9 rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            {collapsed
+              ? <><path d="M13 17l5-5-5-5"/><path d="M6 17l5-5-5-5"/></>
+              : <><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></>
+            }
+          </svg>
+          {!collapsed && <span className="text-[13px]">Collapse</span>}
+        </button>
+
+        <div className={`flex items-center gap-2 px-3 py-1 text-[11px] font-mono ${collapsed ? 'justify-center' : ''}`}>
+          <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${WS_DOT[connectionState] ?? 'bg-fg-muted'}`} />
+          {!collapsed && <span className="text-fg-muted">{WS_LABEL[connectionState] ?? 'Offline'}</span>}
+        </div>
       </div>
     </aside>
   )
