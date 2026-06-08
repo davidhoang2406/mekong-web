@@ -20,14 +20,21 @@ const NAV = [
   },
 ]
 
+const WS_DOT: Record<string, string> = {
+  connected:    'bg-up live-dot',
+  reconnecting: 'bg-yellow-400 live-dot',
+  connecting:   'bg-yellow-400 live-dot',
+  disconnected: 'bg-fg-muted',
+}
+const WS_LABEL: Record<string, string> = {
+  connected:    'Live',
+  reconnecting: 'Reconnecting',
+  connecting:   'Connecting',
+  disconnected: 'Offline',
+}
+
 export function Sidebar() {
   const connectionState = useTickerStore((s) => s.connectionState)
-  const dotColor =
-    connectionState === 'connected' ? 'bg-up live-dot' :
-    connectionState === 'reconnecting' ? 'bg-yellow-400 live-dot' : 'bg-fg-muted'
-  const label =
-    connectionState === 'connected' ? 'connected' :
-    connectionState === 'reconnecting' ? 'reconnecting…' : 'disconnected'
 
   return (
     <aside className="fixed top-[60px] bottom-0 left-0 w-[240px] bg-bg border-r border-border flex flex-col z-20">
@@ -50,9 +57,9 @@ export function Sidebar() {
           </NavLink>
         ))}
       </nav>
-      <div className="border-t border-border px-4 py-3 flex items-center gap-2 text-[12px]">
-        <span className={`h-2 w-2 rounded-full ${dotColor}`} />
-        <span className="text-fg-muted">{label}</span>
+      <div className="border-t border-border px-4 py-3 flex items-center gap-2 text-[11px] font-mono">
+        <span className={`h-1.5 w-1.5 rounded-full ${WS_DOT[connectionState] ?? 'bg-fg-muted'}`} />
+        <span className="text-fg-muted">{WS_LABEL[connectionState] ?? 'Offline'}</span>
       </div>
     </aside>
   )
