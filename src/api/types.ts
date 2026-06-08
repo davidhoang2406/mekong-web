@@ -79,7 +79,6 @@ export interface ScreenerResult {
   pe_ratio: number | null
   pb_ratio: number | null
   roe: number | null
-  eps: number | null
   de_ratio: number | null
   current_ratio: number | null
 }

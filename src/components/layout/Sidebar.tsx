@@ -37,23 +37,26 @@ export function Sidebar() {
   const connectionState = useTickerStore((s) => s.connectionState)
 
   return (
-    <aside className="fixed top-[60px] bottom-0 left-0 w-[240px] bg-bg border-r border-border flex flex-col z-20">
-      <nav className="flex-1 py-3 px-2 space-y-0.5 text-[14px]">
+    <aside
+      className={`fixed top-[60px] bottom-0 left-0 ${collapsed ? 'w-[56px]' : 'w-[240px]'} bg-bg border-r border-border flex flex-col z-20 transition-[width] duration-200`}
+    >
+      <nav className="flex-1 py-3 px-2 space-y-0.5 text-[14px] overflow-hidden">
         {NAV.map(({ to, label, icon, exact }) => (
           <NavLink
             key={to}
             to={to}
             end={exact}
+            title={collapsed ? label : undefined}
             className={({ isActive }) =>
               isActive
                 ? 'nav-active relative flex items-center gap-3 px-3 h-9 rounded-md font-medium'
                 : 'flex items-center gap-3 px-3 h-9 rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg transition-colors'
             }
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
               {icon}
             </svg>
-            {label}
+            {!collapsed && <span className="truncate">{label}</span>}
           </NavLink>
         ))}
       </nav>
