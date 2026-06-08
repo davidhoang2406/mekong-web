@@ -70,13 +70,6 @@ export function Screener() {
 
   const { data, isLoading } = useScreener(selectedYear, selectedWeek)
 
-  useEffect(() => {
-    if (data && !selectedYear && !selectedWeek) {
-      setSelectedYear(data.year)
-      setSelectedWeek(data.week)
-    }
-  }, [data, selectedYear, selectedWeek])
-
   const displayYear = selectedYear ?? data?.year ?? '—'
   const displayWeek = selectedWeek ?? data?.week ?? '—'
   const results = data?.results ?? []
@@ -108,7 +101,7 @@ export function Screener() {
           <WeekDropdown
             year={displayYear}
             week={displayWeek}
-            onChange={(y, w) => { setSelectedYear(y); setSelectedWeek(w) }}
+            onChange={handleWeekChange}
           />
         )}
       </div>
