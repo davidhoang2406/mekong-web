@@ -61,7 +61,12 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
         ))}
       </nav>
 
-      <div className="border-t border-border px-2 py-2 space-y-1">
+      <div className={`border-t border-border px-3 py-2 flex items-center gap-2 text-[11px] font-mono ${collapsed ? 'justify-center' : ''}`}>
+        <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${WS_DOT[connectionState] ?? 'bg-fg-muted'}`} />
+        {!collapsed && <span className="text-fg-muted">{WS_LABEL[connectionState] ?? 'Offline'}</span>}
+      </div>
+
+      <div className="border-t border-border px-2 py-2">
         <button
           onClick={onToggle}
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -75,11 +80,6 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
           </svg>
           {!collapsed && <span className="text-[13px]">Collapse</span>}
         </button>
-
-        <div className={`flex items-center gap-2 px-3 py-1 text-[11px] font-mono ${collapsed ? 'justify-center' : ''}`}>
-          <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${WS_DOT[connectionState] ?? 'bg-fg-muted'}`} />
-          {!collapsed && <span className="text-fg-muted">{WS_LABEL[connectionState] ?? 'Offline'}</span>}
-        </div>
       </div>
     </aside>
   )
