@@ -20,14 +20,21 @@ const NAV = [
   },
 ]
 
+const WS_DOT: Record<string, string> = {
+  connected:    'bg-up live-dot',
+  reconnecting: 'bg-yellow-400 live-dot',
+  connecting:   'bg-yellow-400 live-dot',
+  disconnected: 'bg-fg-muted',
+}
+const WS_LABEL: Record<string, string> = {
+  connected:    'Live',
+  reconnecting: 'Reconnecting',
+  connecting:   'Connecting',
+  disconnected: 'Offline',
+}
+
 export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const connectionState = useTickerStore((s) => s.connectionState)
-  const dotColor =
-    connectionState === 'connected' ? 'bg-up live-dot' :
-    connectionState === 'reconnecting' ? 'bg-yellow-400 live-dot' : 'bg-fg-muted'
-  const connLabel =
-    connectionState === 'connected' ? 'connected' :
-    connectionState === 'reconnecting' ? 'reconnecting…' : 'disconnected'
 
   return (
     <aside
@@ -69,9 +76,9 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
           {!collapsed && <span className="text-[13px]">Collapse</span>}
         </button>
 
-        <div className={`flex items-center gap-2 px-3 py-1 text-[12px] ${collapsed ? 'justify-center' : ''}`}>
-          <span className={`h-2 w-2 rounded-full shrink-0 ${dotColor}`} />
-          {!collapsed && <span className="text-fg-muted truncate">{connLabel}</span>}
+        <div className={`flex items-center gap-2 px-3 py-1 text-[11px] font-mono ${collapsed ? 'justify-center' : ''}`}>
+          <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${WS_DOT[connectionState] ?? 'bg-fg-muted'}`} />
+          {!collapsed && <span className="text-fg-muted">{WS_LABEL[connectionState] ?? 'Offline'}</span>}
         </div>
       </div>
     </aside>

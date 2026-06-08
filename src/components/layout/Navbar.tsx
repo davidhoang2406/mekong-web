@@ -1,22 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useTheme } from '@/hooks/useTheme'
-import { useTickerStore } from '@/stores/tickerStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useSymbols } from '@/hooks/useSymbols'
-
-const WS_DOT: Record<string, string> = {
-  connected:    'bg-up',
-  reconnecting: 'bg-yellow-400 live-dot',
-  connecting:   'bg-yellow-400 live-dot',
-  disconnected: 'bg-fg-muted',
-}
-const WS_LABEL: Record<string, string> = {
-  connected:    'Live',
-  reconnecting: 'Reconnecting',
-  connecting:   'Connecting',
-  disconnected: 'Offline',
-}
 
 const ASSET_BADGE: Record<string, string> = {
   crypto: 'text-[10px] px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700',
@@ -29,7 +15,6 @@ export function Navbar() {
   const [activeIdx, setActiveIdx] = useState(-1)
   const navigate = useNavigate()
   const { theme, toggle: toggleTheme } = useTheme()
-  const connectionState = useTickerStore(s => s.connectionState)
   const { user, clearAuth } = useAuthStore()
   const { data: symbolsData } = useSymbols()
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -146,12 +131,6 @@ export function Navbar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2 text-fg-muted">
-        {/* WS connection status */}
-        <span className="flex items-center gap-1.5 text-[11px] font-mono text-fg-muted px-2">
-          <span className={`h-1.5 w-1.5 rounded-full ${WS_DOT[connectionState] ?? 'bg-fg-muted'}`} />
-          {WS_LABEL[connectionState] ?? 'Offline'}
-        </span>
-
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
