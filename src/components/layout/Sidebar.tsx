@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import { useTickerStore } from '@/stores/tickerStore'
+import { useAuthStore } from '@/stores/authStore'
 
-const NAV = [
+const NAV_PUBLIC = [
   {
     to: '/', label: 'Dashboard', exact: true,
     icon: <><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></>,
@@ -18,6 +19,9 @@ const NAV = [
     to: '/digest', label: 'Digest',
     icon: <path d="M3 7h18M3 12h18M3 17h12"/>,
   },
+]
+
+const NAV_AUTH = [
   {
     to: '/watchlists', label: 'Watchlists',
     icon: <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>,
@@ -39,13 +43,15 @@ const WS_LABEL: Record<string, string> = {
 
 export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const connectionState = useTickerStore((s) => s.connectionState)
+  const user = useAuthStore((s) => s.user)
+  const nav = user ? [...NAV_PUBLIC, ...NAV_AUTH] : NAV_PUBLIC
 
   return (
     <aside
       className={`fixed top-[60px] bottom-0 left-0 ${collapsed ? 'w-[56px]' : 'w-[240px]'} bg-bg border-r border-border flex flex-col z-20 transition-[width] duration-200`}
     >
       <nav className="flex-1 py-3 px-2 space-y-0.5 text-[14px] overflow-hidden">
-        {NAV.map(({ to, label, icon, exact }) => (
+        {nav.map(({ to, label, icon, exact }) => (
           <NavLink
             key={to}
             to={to}
