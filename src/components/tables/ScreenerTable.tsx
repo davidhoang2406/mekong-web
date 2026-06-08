@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { ScreenerResult } from '@/api/types'
-import { Table, THead, TH, TD, TR } from '@/components/ui/table'
 import { formatNumber } from '@/lib/format'
 
 type SortKey = keyof Omit<ScreenerResult, 'symbol'>
@@ -35,33 +34,37 @@ export function ScreenerTable({ results }: { results: ScreenerResult[] }) {
   }
 
   return (
-    <Table>
-      <THead>
+    <table className="tbl w-full text-[13px]">
+      <thead className="bg-bg-muted text-[11px] uppercase tracking-wider text-fg-muted">
         <tr>
-          <TH>Symbol</TH>
+          <th className="text-left font-medium pl-5 py-3">Symbol</th>
           {COLUMNS.map((c) => (
-            <TH key={c.key} className="text-right" onClick={() => toggle(c.key)}>
-              {c.label} {sortKey === c.key ? (asc ? '▲' : '▼') : ''}
-            </TH>
+            <th
+              key={c.key}
+              onClick={() => toggle(c.key)}
+              className="text-right font-medium py-3 pr-5 cursor-pointer select-none hover:text-fg"
+            >
+              {c.label} {sortKey === c.key ? (asc ? '▲' : '▼') : '▾'}
+            </th>
           ))}
         </tr>
-      </THead>
-      <tbody>
+      </thead>
+      <tbody className="font-mono">
         {sorted.map((r) => (
-          <TR key={r.symbol}>
-            <TD>
-              <Link to={`/symbol/${r.symbol}`} className="font-medium text-emerald-400 hover:underline">
+          <tr key={r.symbol}>
+            <td className="pl-5 py-3">
+              <Link to={`/symbol/${r.symbol}`} className="font-sans font-semibold hover:underline">
                 {r.symbol}
               </Link>
-            </TD>
+            </td>
             {COLUMNS.map((c) => (
-              <TD key={c.key} className="text-right tabular-nums">
+              <td key={c.key} className="text-right num py-3 pr-5">
                 {formatNumber(r[c.key])}
-              </TD>
+              </td>
             ))}
-          </TR>
+          </tr>
         ))}
       </tbody>
-    </Table>
+    </table>
   )
 }
