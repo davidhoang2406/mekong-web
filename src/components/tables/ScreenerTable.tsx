@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { ScreenerResult } from '@/api/types'
 import { formatNumber } from '@/lib/format'
+import { SymbolIcon } from '@/components/common/SymbolIcon'
 
 type SortKey = keyof Omit<ScreenerResult, 'symbol'>
 
@@ -53,9 +54,12 @@ export function ScreenerTable({ results }: { results: ScreenerResult[] }) {
         {sorted.map((r) => (
           <tr key={r.symbol}>
             <td className="pl-5 py-3">
-              <Link to={`/symbol/${r.symbol}`} className="font-sans font-semibold hover:underline">
-                {r.symbol}
-              </Link>
+              <div className="flex items-center gap-2">
+                <SymbolIcon symbol={r.symbol} assetClass="stock" size={18} />
+                <Link to={`/symbol/${r.symbol}`} className="font-sans font-semibold hover:underline">
+                  {r.symbol}
+                </Link>
+              </div>
             </td>
             {COLUMNS.map((c) => (
               <td key={c.key} className="text-right num py-3 pr-5">
