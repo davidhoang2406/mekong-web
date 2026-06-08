@@ -10,7 +10,6 @@ const COLUMNS: { key: SortKey; label: string }[] = [
   { key: 'pe_ratio', label: 'P/E' },
   { key: 'pb_ratio', label: 'P/B' },
   { key: 'roe', label: 'ROE %' },
-  { key: 'eps', label: 'EPS' },
   { key: 'de_ratio', label: 'D/E' },
   { key: 'current_ratio', label: 'Current' },
 ]
