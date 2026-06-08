@@ -20,39 +20,59 @@ const NAV = [
   },
 ]
 
-export function Sidebar() {
+export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const connectionState = useTickerStore((s) => s.connectionState)
   const dotColor =
     connectionState === 'connected' ? 'bg-up live-dot' :
     connectionState === 'reconnecting' ? 'bg-yellow-400 live-dot' : 'bg-fg-muted'
-  const label =
+  const connLabel =
     connectionState === 'connected' ? 'connected' :
     connectionState === 'reconnecting' ? 'reconnecting…' : 'disconnected'
 
   return (
-    <aside className="fixed top-[60px] bottom-0 left-0 w-[240px] bg-bg border-r border-border flex flex-col z-20">
-      <nav className="flex-1 py-3 px-2 space-y-0.5 text-[14px]">
+    <aside
+      className={`fixed top-[60px] bottom-0 left-0 ${collapsed ? 'w-[56px]' : 'w-[240px]'} bg-bg border-r border-border flex flex-col z-20 transition-[width] duration-200`}
+    >
+      <nav className="flex-1 py-3 px-2 space-y-0.5 text-[14px] overflow-hidden">
         {NAV.map(({ to, label, icon, exact }) => (
           <NavLink
             key={to}
             to={to}
             end={exact}
+            title={collapsed ? label : undefined}
             className={({ isActive }) =>
               isActive
                 ? 'nav-active relative flex items-center gap-3 px-3 h-9 rounded-md font-medium'
                 : 'flex items-center gap-3 px-3 h-9 rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg transition-colors'
             }
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
               {icon}
             </svg>
-            {label}
+            {!collapsed && <span className="truncate">{label}</span>}
           </NavLink>
         ))}
       </nav>
-      <div className="border-t border-border px-4 py-3 flex items-center gap-2 text-[12px]">
-        <span className={`h-2 w-2 rounded-full ${dotColor}`} />
-        <span className="text-fg-muted">{label}</span>
+
+      <div className="border-t border-border px-2 py-2 space-y-1">
+        <button
+          onClick={onToggle}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className="w-full flex items-center gap-3 px-3 h-9 rounded-md text-fg-muted hover:bg-bg-muted hover:text-fg transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+            {collapsed
+              ? <><path d="M13 17l5-5-5-5"/><path d="M6 17l5-5-5-5"/></>
+              : <><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></>
+            }
+          </svg>
+          {!collapsed && <span className="text-[13px]">Collapse</span>}
+        </button>
+
+        <div className={`flex items-center gap-2 px-3 py-1 text-[12px] ${collapsed ? 'justify-center' : ''}`}>
+          <span className={`h-2 w-2 rounded-full shrink-0 ${dotColor}`} />
+          {!collapsed && <span className="text-fg-muted truncate">{connLabel}</span>}
+        </div>
       </div>
     </aside>
   )
